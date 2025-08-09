@@ -32,7 +32,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Ensure storage resources exist ( public blobs only for easy local testing)
+// Ensure storage resources exist (public blobs only for easy local testing)
 using (var scope = app.Services.CreateScope())
 {
     var blobContainer = scope.ServiceProvider.GetRequiredService<BlobContainerClient>();
