@@ -1,0 +1,45 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudvideouploader
+  namespace: cloudvideouploader
+  labels: { app: cloudvideouploader }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: cloudvideouploader }
+  template:
+    metadata:
+      labels: { app: cloudvideouploader }
+    spec:
+      # If you pull from ACR, add imagePullSecrets here later.
+      containers:
+      - name: api
+        image: marinakregistry123.azurecr.io/cloudvideouploader:dev
+        ports: [{ containerPort: 8080 }]
+       env:
+  - name: ASPNETCORE_URLS
+    value: "http://+:8080"
+  - name: AzureStorage__BlobConnectionString
+    valueFrom:
+      secretKeyRef:
+        name: storage-conn
+        key: blob
+  - name: AzureStorage__QueueConnectionString
+    valueFrom:
+      secretKeyRef:
+        name: storage-conn
+        key: queue
+  - name: AzureStorage__BlobContainerName
+    value: "videos"
+  - name: AzureStorage__QueueName
+    value: "video-processing"
+
+        readinessProbe:
+          httpGet: { path: /healthz, port: 8080 }
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet: { path: /healthz, port: 8080 }
+          initialDelaySeconds: 15
+          periodSeconds: 10

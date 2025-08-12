@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudvideouploader
+  namespace: cloudvideouploader
+spec:
+  template:
+    spec:
+      containers:
+      - name: api
+        env:
+        # Most common names your code might read:
+        - name: AZURE_STORAGE_CONNECTION_STRING
+          valueFrom: { secretKeyRef: { name: storage-conn, key: AZURE_STORAGE_CONNECTION_STRING } }
+        - name: AzureWebJobsStorage
+          valueFrom: { secretKeyRef: { name: storage-conn, key: AZURE_STORAGE_CONNECTION_STRING } }
+        - name: AzureStorage__BlobConnectionString
+          valueFrom: { secretKeyRef: { name: storage-conn, key: AZURE_STORAGE_CONNECTION_STRING } }
+        - name: AzureStorage__QueueConnectionString
+          valueFrom: { secretKeyRef: { name: storage-conn, key: AZURE_STORAGE_CONNECTION_STRING } }
+        - name: ConnectionStrings__Storage
+          valueFrom: { secretKeyRef: { name: storage-conn, key: AZURE_STORAGE_CONNECTION_STRING } }
+        # Guardrail: if some config was setting the dev shortcut, force it off
+        - name: UseDevelopmentStorage
+          value: "false"

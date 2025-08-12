@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudvideouploader
+  namespace: cloudvideouploader
+spec:
+  template:
+    spec:
+      containers:
+      - name: api
+        env:
+        - name: AZURE_STORAGE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: storage-conn
+              key: AZURE_STORAGE_CONNECTION_STRING
